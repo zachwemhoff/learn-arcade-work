@@ -1,0 +1,6 @@
+print("The Iowa State Cyclones are my favorite college football team.")
+print("This year brings an unique set of circumstances due to safety concerns about the Coronavirus.")
+print("The Cyclones announced that they would allow 25,000 fans for their first game on September twelfth.")
+print("Athletic director Jamie Pollard had high praise about how head coach Matt Campbell has handled the situation.")
+print("Pollard said, \"We're blessed that we have Matt Campbell because the man is playing chess while everyone\nelse is playing checkers.\"")
+print("I'm looking forward to cheering on the Cyclones this fall.")
