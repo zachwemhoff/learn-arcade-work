@@ -1,1 +1,3 @@
-print("Aubrey Hepburn once said, \"Nothing is impossible. The word itself says 'I'm Possible!'\"")
+answer = 42
+print("The answer is " + str(answer)+ ".")
+print(f"The answer is {answer}.")
