@@ -1,6 +1,5 @@
-name = "mary"
-if name.lower() == "bob" or "sam":
-    print("Yes")
-else:
-    print("No")
-    
+import random
+
+x = random.random() * 10
+print(x)
+
