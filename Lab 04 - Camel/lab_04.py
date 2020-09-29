@@ -102,7 +102,7 @@ def main():
             done = True
 
         # Thirst
-        if thirst > 6:
+        if not done and thirst > 6:
             print("You died of thirst!")
             print("Game over.")
             print()
@@ -112,7 +112,7 @@ def main():
             print()
 
         # Camel tiredness
-        if camel_tiredness > 8:
+        if not done and camel_tiredness > 8:
             print("Your camel died of exhaustion.")
             print("The natives catch up to you and kill you.")
             print("Game over.")
