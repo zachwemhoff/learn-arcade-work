@@ -25,7 +25,7 @@ def draw_section_1():
         for column in range(30):
             x = column * column_spacing + left_margin  # Instead of zero, calculate the proper x location using 'column'
             y = row * row_spacing - right_margin  # Instead of zero, calculate the proper y location using 'row'
-            arcade.draw_rectangle_filled(x, y, 5, 5, arcade.color.WHITE)
+            arcade.draw_rectangle_filled(x, y, 5, 5, (189, 32, 49))
 
 
 def draw_section_2():
@@ -40,46 +40,98 @@ def draw_section_2():
         for column in range(30):
             x = column * column_spacing + left_margin
             y = row * row_spacing - right_margin
-            arcade.draw_rectangle_filled(x + 300, y, 5, 5, arcade.color.WHITE)
-            if x:
-                arcade.draw_rectangle_filled(x + 300, y, 5, 5, arcade.color.BLACK)
-
-
-
+            if column % 2:
+                arcade.draw_rectangle_filled(x + 300, y, 5, 5, arcade.color.GOLD)
+            else:
+                arcade.draw_rectangle_filled(x + 300, y, 5, 5, (189, 32, 49))
 
 
 def draw_section_3():
     # Use the modulus operator and an if/else statement to select the color.
     # Don't use multiple 'if' statements.
-    pass
+    column_spacing = 10
+    row_spacing = 10
+    left_margin = 5
+    right_margin = -5
+    for row in range(30):
+        for column in range(30):
+            x = column * column_spacing + left_margin
+            y = row * row_spacing - right_margin
+            if row % 2:
+                arcade.draw_rectangle_filled(x + 600, y, 5, 5, arcade.color.GOLD)
+            else:
+                arcade.draw_rectangle_filled(x + 600, y, 5, 5, (189, 32, 49))
 
 
 def draw_section_4():
     # Use the modulus operator and just one 'if' statement to select the color.
-    pass
+    column_spacing = 10
+    row_spacing = 10
+    left_margin = 5
+    right_margin = -5
+    for row in range(30):
+        for column in range(30):
+            x = column * column_spacing + left_margin
+            y = row * row_spacing - right_margin
+            if row % 2 or column % 2:
+                arcade.draw_rectangle_filled(x + 900, y, 5, 5, arcade.color.GOLD)
+            else:
+                arcade.draw_rectangle_filled(x + 900, y, 5, 5, (189, 32, 49))
 
 
 def draw_section_5():
     # Do NOT use 'if' statements to complete 5-8. Manipulate the loops instead.
-    pass
+    column_spacing = 10
+    row_spacing = 10
+    left_margin = 5
+    right_margin = -5
+    for row in range(30):
+        for column in range(row, 30):
+            x = column * column_spacing + left_margin
+            y = row * row_spacing + right_margin
+            arcade.draw_rectangle_filled(x, y + 310, 5, 5, (189, 32, 49))
 
 
 def draw_section_6():
-    pass
+    column_spacing = 10
+    row_spacing = 10
+    left_margin = 5
+    right_margin = -5
+    for row in range(30):
+        for column in range(30 - row):
+            x = column * column_spacing + left_margin
+            y = row * row_spacing + right_margin
+            arcade.draw_rectangle_filled(x + 300, y + 310, 5, 5, (189, 32, 49))
 
 
 def draw_section_7():
-    pass
+    column_spacing = 10
+    row_spacing = 10
+    left_margin = 5
+    right_margin = -5
+    for row in range(31):
+        for column in range(row):
+            x = column * column_spacing + left_margin
+            y = row * row_spacing + right_margin
+            arcade.draw_rectangle_filled(x + 600, y + 300, 5, 5, (189, 32, 49))
 
 
 def draw_section_8():
-    pass
+    column_spacing = 10
+    row_spacing = 10
+    left_margin = 5
+    right_margin = -5
+    for row in range(30):
+        for column in range(29 - row, 30):
+            x = column * column_spacing + left_margin
+            y = row * row_spacing + right_margin
+            arcade.draw_rectangle_filled(x + 900, y + 310, 5, 5, (189, 32, 49))
 
 
 def main():
     # Create a window
     arcade.open_window(1200, 600, "Lab 05 - Loopy Lab")
-    arcade.set_background_color(arcade.color.AIR_FORCE_BLUE)
+    arcade.set_background_color(arcade.color.CADET_GREY)
 
     arcade.start_render()
 
