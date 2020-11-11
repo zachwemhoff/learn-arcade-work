@@ -7,6 +7,7 @@ print(my_list)
 # temp = my_list[0]
 # my_list[0] = my_list[2]
 # my_list[2] = temp
+looking for the three lines above
 
 my_list[0], my_list[2] = my_list[2], my_list[0]
 print(my_list)
