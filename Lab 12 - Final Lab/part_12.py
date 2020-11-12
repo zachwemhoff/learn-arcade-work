@@ -1,13 +1,9 @@
 """
 Sprite with Moving Platforms
 
-Load a map stored in csv format, as exported by the program 'Tiled.'
-
-Artwork from http://kenney.nl
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_moving_platforms
 """
+# Some beginning code from arcade.academy, Moving Platforms
+# Other code adapted from previous labs and arcade.academy
 import arcade
 import os
 import random
@@ -17,7 +13,7 @@ SPRITE_SCALING = 1.0
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 COIN_COUNT = 10
-SCREEN_TITLE = "Sprite with Moving Platforms Example"
+SCREEN_TITLE = "Final Lab: Collecting Coins and Avoiding Enemies Game"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 TILE_SCALING = 0.5
@@ -84,11 +80,6 @@ class PlayerCharacter(arcade.Sprite):
         # Set the initial texture
         self.texture = self.idle_texture_pair[0]
 
-        # Hit box will be set based on the first image used. If you want to specify
-        # a different hit box, you can do it like the code below.
-        # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
-        self.set_hit_box(self.texture.hit_box_points)
-
     def update_animation(self, delta_time: float = 1/60):
 
         # Figure out if we need to flip face left or right
@@ -141,8 +132,11 @@ class MyGame(arcade.Window):
         self.moving_wall_list = None
         self.player_list = None
         self.coin_list = None
+        self.flag_list = None
 
         # Set up the player
+        self.score = 0
+        self.coins_left = 10
         self.player_sprite = None
         self.physics_engine = None
         self.view_left = 0
@@ -159,8 +153,11 @@ class MyGame(arcade.Window):
         self.moving_wall_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
+        self.flag_list = arcade.SpriteList()
 
         # Set up the player
+        self.score = 0
+        self.coins_left = 10
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = 2 * GRID_PIXEL_SIZE
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
@@ -204,8 +201,8 @@ class MyGame(arcade.Window):
         wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
         wall.center_y = 4 * GRID_PIXEL_SIZE
         wall.center_x = 1500
-        wall.boundary_left = 1250
-        wall.boundary_right = 1700
+        wall.boundary_left = 1100
+        wall.boundary_right = 1400
         wall.change_x = -2 * SPRITE_SCALING
 
         self.all_wall_list.append(wall)
@@ -223,17 +220,13 @@ class MyGame(arcade.Window):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        # Create platform moving diagonally
+        # Create platform moving up and down
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
         wall.center_y = 5 * GRID_PIXEL_SIZE
-        wall.center_x = 8 * GRID_PIXEL_SIZE
-        wall.boundary_left = 7 * GRID_PIXEL_SIZE
-        wall.boundary_right = 9 * GRID_PIXEL_SIZE
-
-        wall.boundary_top = 8 * GRID_PIXEL_SIZE
-        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
-        wall.change_x = 2 * SPRITE_SCALING
+        wall.center_x = 2200
+        wall.boundary_top = 550
+        wall.boundary_bottom = 350
         wall.change_y = 2 * SPRITE_SCALING
 
         self.all_wall_list.append(wall)
@@ -247,23 +240,34 @@ class MyGame(arcade.Window):
             wall.center_x = x
             wall.center_y = 350
             self.all_wall_list.append(wall)
+        for x in range(2750, 3225, 64):
+            wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
+            wall.center_x = x
+            wall.center_y = 375
+            self.all_wall_list.append(wall)
 
         # Outer wall image from kenny.nl
         # from kenny_simplifiedplatformer.zip
         for x in range(-60, 1300, 30):
-            wall = arcade.Sprite("platformPack_tile040.png", 0.7)
+            wall = arcade.Sprite("platformPack_tile040.png", 1.0)
             wall.center_x = x
             wall.center_y = 1650
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
-        for y in range(-40, 1650, 30):
-            wall = arcade.Sprite("platformPack_tile040.png", 0.7)
+        for y in range(0, 375, 30):
+            wall = arcade.Sprite("platformPack_tile040.png", 1.0)
             wall.center_x = 3755
             wall.center_y = y
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
-        for y in range(-40, 1650, 30):
-            wall = arcade.Sprite("platformPack_tile040.png", 0.7)
+        for y in range(550, 1650, 30):
+            wall = arcade.Sprite("platformPack_tile040.png", 1.0)
+            wall.center_x = 3755
+            wall.center_y = y
+            self.static_wall_list.append(wall)
+            self.all_wall_list.append(wall)
+        for y in range(0, 1650, 30):
+            wall = arcade.Sprite("platformPack_tile040.png", 1.0)
             wall.center_x = -60
             wall.center_y = y
             self.static_wall_list.append(wall)
@@ -275,11 +279,20 @@ class MyGame(arcade.Window):
             coin = arcade.Sprite("coin_01.png", .3)
 
             # Position the coin
-            coin.center_x = random.randrange(0, 3755)
-            coin.center_y = random.randrange(150, 700)
+            coin.center_x = random.randrange(50, 3700)
+            coin.center_y = random.randrange(150, 650)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
+
+        # Place Flags
+        # Flag from kenny_platformerkit2, kenny.nl
+        flag = arcade.Sprite("flag_NW.png", .7)
+        # Position the flag
+        flag.center_x = 3750
+        flag.center_y = 440
+        # Add the flag to the list
+        self.flag_list.append(flag)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -287,7 +300,7 @@ class MyGame(arcade.Window):
                                            gravity_constant=GRAVITY)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.BLUEBERRY)
 
         # Set the viewport boundaries
         # These numbers set where we have 'scrolled' to.
@@ -310,14 +323,13 @@ class MyGame(arcade.Window):
         self.all_wall_list.draw()
         self.player_list.draw()
         self.coin_list.draw()
+        self.flag_list.draw()
 
-        # Put the text on the screen.
-        # Adjust the text position based on the viewport so that we don't
-        # scroll the text too.
-        distance = self.player_sprite.right
-        output = f"Distance: {distance}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20,
-                         arcade.color.WHITE, 14)
+        # Put the score on the screen.
+        output = "Coins Left: " + str(self.coins_left)
+        arcade.draw_text(output, self.view_left, self.view_bottom + 15, arcade.color.WHITE, 14)
+        output = "Score: " + str(self.score)
+        arcade.draw_text(output, self.view_left, self.view_bottom, arcade.color.WHITE, 14)
 
     def on_key_press(self, key, modifiers):
         """
@@ -360,6 +372,8 @@ class MyGame(arcade.Window):
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in coins_hit_list:
+            self.score += 1
+            self.coins_left -= 1
             coin.remove_from_sprite_lists()
 
         # --- Manage Scrolling ---
