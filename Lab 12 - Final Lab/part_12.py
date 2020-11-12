@@ -119,11 +119,12 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
+        # directory this .py file is in.
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
+
+        # Coin collect sound from Game Assets for CMSC 150 found under resources of the CMSC 150 Moodle page
+        self.coin_collect_sound = arcade.load_sound("coin3.wav")
 
         # Sprite lists
         self.all_sprites_list = None
@@ -374,6 +375,7 @@ class MyGame(arcade.Window):
         for coin in coins_hit_list:
             self.score += 1
             self.coins_left -= 1
+            arcade.play_sound(self.coin_collect_sound)
             coin.remove_from_sprite_lists()
 
         # --- Manage Scrolling ---
@@ -423,4 +425,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
