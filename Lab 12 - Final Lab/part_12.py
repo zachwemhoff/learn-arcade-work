@@ -1,7 +1,3 @@
-"""
-Sprite with Moving Platforms
-
-"""
 # Some beginning code from arcade.academy, Moving Platforms
 # Other code adapted from previous labs and arcade.academy
 import arcade
@@ -9,6 +5,9 @@ import os
 import random
 
 SPRITE_SCALING = 1.0
+TILE_SCALING = 0.5
+CHARACTER_SCALING = TILE_SCALING * 2
+SPRITE_SIZE = int(CHARACTER_SCALING * SPRITE_SCALING)
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
@@ -16,8 +15,7 @@ COIN_COUNT = 10
 SCREEN_TITLE = "Final Lab: Collecting Coins and Avoiding Enemies Game"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
-TILE_SCALING = 0.5
-CHARACTER_SCALING = TILE_SCALING * 2
+
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -134,6 +132,8 @@ class MyGame(arcade.Window):
         self.player_list = None
         self.coin_list = None
         self.flag_list = None
+        self.arrow_list = None
+        self.enemy_list = None
 
         # Set up the player
         self.score = 0
@@ -155,6 +155,8 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
         self.flag_list = arcade.SpriteList()
+        self.arrow_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0
@@ -247,6 +249,40 @@ class MyGame(arcade.Window):
             wall.center_y = 375
             self.all_wall_list.append(wall)
 
+        # Enemies for level 1
+        # Images from kenny.nl
+        # -- Draw an enemy on the ground
+        enemy = arcade.Sprite("fly.png", SPRITE_SCALING)
+        enemy.bottom = 200
+        enemy.left = 600
+        # Set enemy initial speed
+        enemy.change_x = 2
+        enemy.boundary_right = 1000
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("bee.png", SPRITE_SCALING)
+        enemy.bottom = 150
+        enemy.left = 500
+        enemy.change_x = -2
+        self.enemy_list.append(enemy)
+
+        # -- Draw a enemy on the platform
+        enemy = arcade.Sprite("bee.png", SPRITE_SCALING)
+        enemy.bottom = 390
+        enemy.left = 1750
+        enemy.change_x = 2
+        enemy.boundary_left = 1500
+        enemy.boundary_right = 2000
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("fly.png", SPRITE_SCALING)
+        enemy.bottom = 410
+        enemy.left = 3000
+        enemy.change_x = -3
+        enemy.boundary_left = 2750
+        enemy.boundary_right = 3225
+        self.enemy_list.append(enemy)
+
         # Outer wall image from kenny.nl
         # from kenny_simplifiedplatformer.zip
         for x in range(-60, 1300, 30):
@@ -295,6 +331,14 @@ class MyGame(arcade.Window):
         # Add the flag to the list
         self.flag_list.append(flag)
 
+        # Place Arrows
+        # Arrow image from platformer-pack-redux-360-assets, kenny.nl
+        arrow = arcade.Sprite("signRight.png", .5)
+        arrow.center_x = 20
+        arrow.center_y = 160
+        # Add the arrow to the arrow list
+        self.arrow_list.append(arrow)
+
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
                                            self.all_wall_list,
@@ -323,8 +367,10 @@ class MyGame(arcade.Window):
         self.moving_wall_list.draw()
         self.all_wall_list.draw()
         self.player_list.draw()
+        self.enemy_list.draw()
         self.coin_list.draw()
         self.flag_list.draw()
+        self.arrow_list.draw()
 
         # Put the score on the screen.
         output = "Coins Left: " + str(self.coins_left)
@@ -355,28 +401,47 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
 
         # Call update on all sprites
-        self.physics_engine.update()
-        self.coin_list.update()
+        # Update the player based on the physics engine
+        if not self.game_over:
+            # Move the enemies
+            self.physics_engine.update()
+            self.coin_list.update()
+            self.enemy_list.update()
 
-        # Update animations
-        if self.physics_engine.can_jump():
-            self.player_sprite.can_jump = False
-        else:
-            self.player_sprite.can_jump = True
+            # Check each enemy
+            for enemy in self.enemy_list:
+                # If the enemy hit a wall, reverse
+                if len(arcade.check_for_collision_with_list(enemy, self.all_wall_list)) > 0:
+                    enemy.change_x *= -1
+                # If the enemy hit the left boundary, reverse
+                elif enemy.boundary_left is not None and enemy.left < enemy.boundary_left:
+                    enemy.change_x *= -1
+                # If the enemy hit the right boundary, reverse
+                elif enemy.boundary_right is not None and enemy.right > enemy.boundary_right:
+                    enemy.change_x *= -1
 
-        self.player_list.update_animation(delta_time)
+            # See if the player hit an enemy. If so, game over.
+            if len(arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list)) > 0:
+                self.game_over = True
 
-        # Update Coin List
-        # Generate a list of all sprites that collided with the player.
-        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                              self.coin_list)
+            # Update animations
+            if self.physics_engine.can_jump():
+                self.player_sprite.can_jump = False
+            else:
+                self.player_sprite.can_jump = True
 
-        # Loop through each colliding sprite, remove it, and add to the score.
-        for coin in coins_hit_list:
-            self.score += 1
-            self.coins_left -= 1
-            arcade.play_sound(self.coin_collect_sound)
-            coin.remove_from_sprite_lists()
+            self.player_list.update_animation(delta_time)
+
+            # Update Coin List
+            # Generate a list of all sprites that collided with the player.
+            coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+
+            # Loop through each colliding sprite, remove it, and add to the score.
+            for coin in coins_hit_list:
+                self.score += 1
+                self.coins_left -= 1
+                arcade.play_sound(self.coin_collect_sound)
+                coin.remove_from_sprite_lists()
 
         # --- Manage Scrolling ---
 

@@ -59,6 +59,8 @@ class MyGame(arcade.Window):
         grid_x = x // (WIDTH + MARGIN)
         grid_y = y // (HEIGHT + MARGIN)
 
+        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
+
         if self.grid[grid_y][grid_x] == 0:
             self.grid[grid_y][grid_x] = 1
         else:
