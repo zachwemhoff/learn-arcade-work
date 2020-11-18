@@ -34,17 +34,23 @@ LEFT_FACING = 1
 
 class InstructionView(arcade.View):
     def on_show(self):
-        arcade.set_background_color(arcade.color.ORANGE_PEEL)
+        arcade.set_background_color(arcade.color.FERN_GREEN)
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Instructions Screen", SCREEN_WIDTH/2, SCREEN_HEIGHT/2,
+        arcade.draw_text("Instructions:", SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + 200,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Use the left and right arrow keys to move left or right", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100,
+                         arcade.color.GRAY, font_size=25, anchor_x="center")
+        arcade.draw_text("Use the up arrow key to jump", SCREEN_WIDTH / 2,
+                         SCREEN_HEIGHT / 2+50, arcade.color.GRAY, font_size=25, anchor_x="center")
+        arcade.draw_text("Collect all of the coins without running into the bugs", SCREEN_WIDTH/2, SCREEN_HEIGHT/2,
+                         arcade.color.GRAY, font_size=25, anchor_x="center")
         arcade.draw_text("Click to advance", SCREEN_WIDTH/2, SCREEN_HEIGHT/2-75,
-                         arcade.color.GRAY, font_size=20, anchor_x="center")
+                         arcade.color.WHITE, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         game_view = GameView()
@@ -52,13 +58,40 @@ class InstructionView(arcade.View):
         self.window.show_view(game_view)
 
 
-class GameOverView(arcade.View):
+class GameOverViewWin(arcade.View):
     """ View to show when game is over """
 
     def __init__(self):
         """ This is run once when we switch to this view """
+        # Screen created using windows paint and kenny.nl image
         super().__init__()
         self.texture = arcade.load_texture("game_over_won.png")
+
+        # Reset the viewport, necessary if we have a scrolling game and we need
+        # to reset the viewport back to the start so we can see what we draw.
+        arcade.set_viewport(0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
+
+    def on_draw(self):
+        """ Draw this view """
+        arcade.start_render()
+        self.texture.draw_sized(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
+                                SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        """ If the user presses the mouse button, re-start the game. """
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
+
+
+class GameOverViewLoss(arcade.View):
+    """ View to show when game is over """
+
+    def __init__(self):
+        """ This is run once when we switch to this view """
+        # Screen created using windows paint and kenny.nl image
+        super().__init__()
+        self.texture = arcade.load_texture("game_over_lost.png")
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
@@ -211,7 +244,7 @@ class GameView(arcade.View):
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.player_list.append(self.player_sprite)
 
-        # Create floor
+        # Create ground for Level 1
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         for i in range(30):
             wall = arcade.Sprite("platformPack_tile001.png", 2)
@@ -219,6 +252,9 @@ class GameView(arcade.View):
             wall.center_x = i * GRID_PIXEL_SIZE
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
+
+        # Create ground for Level 2
+        # Image from kenny.nl
 
         # Create platform side to side
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
@@ -469,6 +505,8 @@ class GameView(arcade.View):
             # See if the player hit an enemy. If so, game over.
             if len(arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list)) > 0:
                 self.game_over = True
+                view = GameOverViewLoss()
+                self.window.show_view(view)
 
             # Update animations
             if self.physics_engine.can_jump():
@@ -492,7 +530,7 @@ class GameView(arcade.View):
             # Check length of coin list. If it is zero, flip to the
             # game over view.
             if len(self.coin_list) == 0:
-                view = GameOverView()
+                view = GameOverViewWin()
                 self.window.show_view(view)
 
         # --- Manage Scrolling ---
