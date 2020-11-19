@@ -151,7 +151,7 @@ class GameView(arcade.View):
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
-        # Coin collect sound from Game Assets for CMSC 150 found under resources of the CMSC 150 Moodle page
+        # Sounds from Game Assets for CMSC 150 found under resources of the CMSC 150 Moodle page
         self.coin_collect_sound = arcade.load_sound("coin3.wav")
         self.jump_sound = arcade.load_sound("jump4.wav")
         self.enemy_collide_sound = arcade.load_sound("gameover4.wav")
