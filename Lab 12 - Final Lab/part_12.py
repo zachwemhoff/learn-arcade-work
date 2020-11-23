@@ -20,7 +20,7 @@ GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
-VIEWPORT_MARGIN = SPRITE_PIXEL_SIZE * SPRITE_SCALING
+VIEWPORT_MARGIN = 120
 RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 
 # Physics
@@ -48,11 +48,11 @@ class InstructionView(arcade.View):
         arcade.draw_text("Instructions:", SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + 200,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
         arcade.draw_text("Use the left and right arrow keys to move left or right", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100,
-                         arcade.color.GRAY, font_size=25, anchor_x="center")
+                         arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
         arcade.draw_text("Use the up arrow key to jump", SCREEN_WIDTH / 2,
-                         SCREEN_HEIGHT / 2+50, arcade.color.GRAY, font_size=25, anchor_x="center")
+                         SCREEN_HEIGHT / 2+50, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
         arcade.draw_text("Collect all of the coins without running into the bugs", SCREEN_WIDTH/2, SCREEN_HEIGHT/2,
-                         arcade.color.GRAY, font_size=25, anchor_x="center")
+                         arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
         arcade.draw_text("Click to advance", SCREEN_WIDTH/2, SCREEN_HEIGHT/2-75,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
 
@@ -218,7 +218,8 @@ class GameView(arcade.View):
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
 
-        # Create platform side to side
+        """Level 1"""
+        # Create platform side to side level 1
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
         wall.center_y = 3 * GRID_PIXEL_SIZE
@@ -230,7 +231,7 @@ class GameView(arcade.View):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        # Create platform side to side
+        # Create platform side to side level 1
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
         wall.center_y = 3 * GRID_PIXEL_SIZE
@@ -242,7 +243,7 @@ class GameView(arcade.View):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        # Create platform side to side
+        # Create platform side to side Level 1
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
         wall.center_y = 4 * GRID_PIXEL_SIZE
@@ -254,7 +255,7 @@ class GameView(arcade.View):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        # Create platform moving up and down
+        # Create platform moving up and down Level 1
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
         wall.center_y = 5 * GRID_PIXEL_SIZE
@@ -266,7 +267,7 @@ class GameView(arcade.View):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        # Create platform moving up and down
+        # Create platform moving up and down level 1
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         wall = arcade.Sprite("platformPack_tile001.png", SPRITE_SCALING)
         wall.center_y = 5 * GRID_PIXEL_SIZE
@@ -278,7 +279,7 @@ class GameView(arcade.View):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        # Add Platforms for player to jump on
+        # Add Platforms for player to jump on level 1
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         # Place boxes inside a loop
         for x in range(1500, 2000, 64):
@@ -292,7 +293,34 @@ class GameView(arcade.View):
             wall.center_y = 375
             self.all_wall_list.append(wall)
 
-        # Enemies for level 1
+        """ Level 2 """
+        # Create platform side to side level 2
+        # Image from kenny.nl: kenny_simplifiedplatformer.zip
+        wall = arcade.Sprite("platformPack_tile002.png", SPRITE_SCALING)
+        wall.center_y = 3 * GRID_PIXEL_SIZE
+        wall.center_x = 4000
+        wall.boundary_left = 3800
+        wall.boundary_right = 4200
+        wall.change_x = 2 * SPRITE_SCALING
+
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
+
+        # Add Platforms for player to jump on level 1
+        # Image from kenny.nl: kenny_simplifiedplatformer.zip
+        # Place boxes inside a loop
+        for x in range(4500, 5000, 64):
+            wall = arcade.Sprite("platformPack_tile002.png", SPRITE_SCALING)
+            wall.center_x = x
+            wall.center_y = 350
+            self.all_wall_list.append(wall)
+        for x in range(6000, 6500, 64):
+            wall = arcade.Sprite("platformPack_tile002.png", SPRITE_SCALING)
+            wall.center_x = x
+            wall.center_y = 375
+            self.all_wall_list.append(wall)
+
+        """Enemies for level 1"""
         # Images from kenny.nl
         # -- Draw an enemy on the ground
         enemy = arcade.Sprite("fly.png", SPRITE_SCALING)
@@ -309,7 +337,7 @@ class GameView(arcade.View):
         enemy.change_x = -2
         self.enemy_list.append(enemy)
 
-        # -- Draw a enemy on the platform
+        # Draw a enemy on the platform
         enemy = arcade.Sprite("bee.png", SPRITE_SCALING)
         enemy.bottom = 390
         enemy.left = 1750
@@ -324,6 +352,39 @@ class GameView(arcade.View):
         enemy.change_x = -3
         enemy.boundary_left = 2750
         enemy.boundary_right = 3225
+        self.enemy_list.append(enemy)
+
+        """Enemies for level 2"""
+        # Images from kenny.nl
+        enemy = arcade.Sprite("snake.png", 0.7)
+        enemy.bottom = 150
+        enemy.left = 4100
+        enemy.change_x = 2
+        enemy.boundary_right = 4600
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("rhino.png", 0.7)
+        enemy.bottom = 150
+        enemy.left = 5400
+        enemy.change_x = 2.5
+        enemy.boundary_left = 5200
+        enemy.boundary_right = 5900
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("giraffe.png", 0.7)
+        enemy.bottom = 410
+        enemy.left = 4700
+        enemy.change_x = 2
+        enemy.boundary_left = 4500
+        enemy.boundary_right = 5000
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("zebra.png", 0.7)
+        enemy.bottom = 410
+        enemy.left = 6250
+        enemy.change_x = 2
+        enemy.boundary_left = 6000
+        enemy.boundary_right = 6500
         self.enemy_list.append(enemy)
 
         # Outer wall image from kenny.nl
@@ -418,11 +479,11 @@ class GameView(arcade.View):
         self.arrow_list.draw()
 
         # Put the score on the screen.
-        output = "Coins Left: " + str(self.coins_left)
+        output = f"Coins Left: {self.coins_left}"
         arcade.draw_text(output, self.view_left, self.view_bottom + 30, arcade.color.WHITE, 14)
-        output = "Flags Left: " + str(self.flags_left)
+        output = f"Flags Left: {self.flags_left}"
         arcade.draw_text(output, self.view_left, self.view_bottom + 15, arcade.color.WHITE, 14)
-        output = "Score: " + str(self.score)
+        output = f"Score: {self.score}"
         arcade.draw_text(output, self.view_left, self.view_bottom, arcade.color.WHITE, 14)
 
     def on_key_press(self, key, modifiers):
