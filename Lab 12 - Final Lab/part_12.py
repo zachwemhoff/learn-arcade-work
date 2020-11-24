@@ -24,7 +24,7 @@ VIEWPORT_MARGIN = 120
 RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 
 # Physics
-MOVEMENT_SPEED = 7 * SPRITE_SCALING
+MOVEMENT_SPEED = 9 * SPRITE_SCALING
 JUMP_SPEED = 25 * SPRITE_SCALING
 GRAVITY = .9 * SPRITE_SCALING
 
@@ -169,7 +169,7 @@ class GameView(arcade.View):
 
         # Set up the player
         self.score = 0
-        self.flags_left = 1
+        self.flags_left = 2
         self.coins_left = 10
         self.player_sprite = None
         self.physics_engine = None
@@ -193,7 +193,7 @@ class GameView(arcade.View):
 
         # Set up the player
         self.score = 0
-        self.coins_left = 10
+        self.coins_left = 20
         self.flags_left = 1
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = PLAYER_START_X
@@ -389,7 +389,7 @@ class GameView(arcade.View):
 
         # Outer wall image from kenny.nl
         # from kenny_simplifiedplatformer.zip
-        for x in range(-60, 1300, 30):
+        for x in range(-60, 1650, 30):
             wall = arcade.Sprite("platformPack_tile040.png", 1.0)
             wall.center_x = x
             wall.center_y = 1650
@@ -414,6 +414,20 @@ class GameView(arcade.View):
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
 
+        # Level 2
+        for y in range(0, 375, 30):
+            wall = arcade.Sprite("platformPack_tile040.png", 1.0)
+            wall.center_x = 7500
+            wall.center_y = y
+            self.static_wall_list.append(wall)
+            self.all_wall_list.append(wall)
+        for y in range(550, 1650, 30):
+            wall = arcade.Sprite("platformPack_tile040.png", 1.0)
+            wall.center_x = 7500
+            wall.center_y = y
+            self.static_wall_list.append(wall)
+            self.all_wall_list.append(wall)
+
         # Place Coins
         # Coin image from kenny.nl
         for i in range(COIN_COUNT):
@@ -421,6 +435,15 @@ class GameView(arcade.View):
 
             # Position the coin
             coin.center_x = random.randrange(50, 3700)
+            coin.center_y = random.randrange(150, 350)
+            coin.center_y = random.randrange(390, 625)
+
+            self.coin_list.append(coin)
+
+        # Level 2
+        for i in range(COIN_COUNT):
+            coin = arcade.Sprite("coin_01.png", .3)
+            coin.center_x = random.randrange(4000, 7500)
             coin.center_y = random.randrange(150, 350)
             coin.center_y = random.randrange(390, 625)
 
@@ -435,6 +458,12 @@ class GameView(arcade.View):
             flag.center_x = 3780
             flag.center_y = 440
             # Add the flag to the list
+            self.flag_list.append(flag)
+        # Level 2
+        for i in range(FLAG_COUNT):
+            flag = arcade.Sprite("flag_NW.png", .7)
+            flag.center_x = 7520
+            flag.center_y = 440
             self.flag_list.append(flag)
 
         # Place Arrows
