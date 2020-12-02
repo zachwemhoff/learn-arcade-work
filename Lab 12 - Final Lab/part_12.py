@@ -194,7 +194,7 @@ class GameView(arcade.View):
         # Set up the player
         self.score = 0
         self.coins_left = 20
-        self.flags_left = 1
+        self.flags_left = 2
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
@@ -213,6 +213,15 @@ class GameView(arcade.View):
         # Image from kenny.nl
         for x in range(3800, 7510, 64):
             wall = arcade.Sprite("platformPack_tile002.png", 2)
+            wall.center_x = x
+            wall.center_y = 65
+            self.static_wall_list.append(wall)
+            self.all_wall_list.append(wall)
+
+        # Create ground for Level 3
+        # Image from kenny.nl
+        for x in range(7600, 11310, 64):
+            wall = arcade.Sprite("platformPack_tile003.png", 2)
             wall.center_x = x
             wall.center_y = 65
             self.static_wall_list.append(wall)
@@ -306,7 +315,7 @@ class GameView(arcade.View):
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
-        # Add Platforms for player to jump on level 1
+        # Add Platforms for player to jump on level 2
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         # Place boxes inside a loop
         for x in range(4500, 5000, 64):
@@ -316,6 +325,45 @@ class GameView(arcade.View):
             self.all_wall_list.append(wall)
         for x in range(6000, 6500, 64):
             wall = arcade.Sprite("platformPack_tile002.png", SPRITE_SCALING)
+            wall.center_x = x
+            wall.center_y = 375
+            self.all_wall_list.append(wall)
+
+        """Level 3"""
+        # Create platform moving up and down level 3
+        # Image from kenny.nl: kenny_simplifiedplatformer.zip
+        wall = arcade.Sprite("platformPack_tile003.png", SPRITE_SCALING)
+        wall.center_y = 5 * GRID_PIXEL_SIZE
+        wall.center_x = 7900
+        wall.boundary_top = 550
+        wall.boundary_bottom = 250
+        wall.change_y = 2 * SPRITE_SCALING
+
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
+
+        # Create platform side to side level 3
+        # Image from kenny.nl: kenny_simplifiedplatformer.zip
+        wall = arcade.Sprite("platformPack_tile003.png", SPRITE_SCALING)
+        wall.center_y = 3 * GRID_PIXEL_SIZE
+        wall.center_x = 10800
+        wall.boundary_left = 10600
+        wall.boundary_right = 11000
+        wall.change_x = 2 * SPRITE_SCALING
+
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
+
+        # Add Platforms for player to jump on level 3
+        # Image from kenny.nl: kenny_simplifiedplatformer.zip
+        # Place boxes inside a loop
+        for x in range(8200, 8700, 64):
+            wall = arcade.Sprite("platformPack_tile003.png", SPRITE_SCALING)
+            wall.center_x = x
+            wall.center_y = 350
+            self.all_wall_list.append(wall)
+        for x in range(9700, 10300, 64):
+            wall = arcade.Sprite("platformPack_tile003.png", SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = 375
             self.all_wall_list.append(wall)
@@ -436,7 +484,7 @@ class GameView(arcade.View):
             # Position the coin
             coin.center_x = random.randrange(50, 3700)
             coin.center_y = random.randrange(150, 350)
-            coin.center_y = random.randrange(390, 625)
+            coin.center_y = random.randrange(400, 580)
 
             self.coin_list.append(coin)
 
@@ -445,7 +493,7 @@ class GameView(arcade.View):
             coin = arcade.Sprite("coin_01.png", .3)
             coin.center_x = random.randrange(4000, 7500)
             coin.center_y = random.randrange(150, 350)
-            coin.center_y = random.randrange(390, 625)
+            coin.center_y = random.randrange(400, 580)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
