@@ -36,6 +36,23 @@ PLAYER_START_X = 50
 PLAYER_START_Y = 60
 
 
+class TitleScreen (arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.RED_DEVIL)
+        arcade.set_viewport(0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("Super Adventurer", SCREEN_WIDTH/2, SCREEN_HEIGHT/2,
+                         arcade.color.BLACK, font_size=60, anchor_x="center")
+        arcade.draw_text("Click to Advance to Instruction Screen", SCREEN_WIDTH/2, SCREEN_HEIGHT/2 - 100,
+                         arcade.color.BLACK, font_size=25, anchor_x="center")
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        game_view = InstructionView()
+        self.window.show_view(game_view)
+
+
 class InstructionView(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.FERN_GREEN)
@@ -51,9 +68,13 @@ class InstructionView(arcade.View):
                          SCREEN_HEIGHT/2+100, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
         arcade.draw_text("* Use the up arrow key to jump", SCREEN_WIDTH / 2,
                          SCREEN_HEIGHT / 2+50, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
-        arcade.draw_text("* Collect all of the coins without running into enemies to win", SCREEN_WIDTH/2,
+        arcade.draw_text("* Collect all of the coins and flags without running into enemies to win", SCREEN_WIDTH/2,
                          SCREEN_HEIGHT/2, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
-        arcade.draw_text("Click to advance", SCREEN_WIDTH/2, SCREEN_HEIGHT/2-75,
+        arcade.draw_text("* Coins are worth 1 point and flags are worth 5 points", SCREEN_WIDTH/2,
+                         SCREEN_HEIGHT/2 - 45, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
+        arcade.draw_text("* Must earn 45 points to win", SCREEN_WIDTH/2,
+                         SCREEN_HEIGHT/2 - 90, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
+        arcade.draw_text("Click to advance", SCREEN_WIDTH/2, SCREEN_HEIGHT/2 - 135,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
@@ -155,6 +176,7 @@ class GameView(arcade.View):
         self.coin_collect_sound = arcade.load_sound("coin3.wav")
         self.jump_sound = arcade.load_sound("jump4.wav")
         self.enemy_collide_sound = arcade.load_sound("gameover4.wav")
+        self.flag_collect_sound = arcade.load_sound("upgrade5.wav")
 
         # Sprite lists
         self.all_sprites_list = None
@@ -697,6 +719,7 @@ class GameView(arcade.View):
             for flag in flags_hit_list:
                 self.score += 5
                 self.flags_left -= 1
+                arcade.play_sound(self.flag_collect_sound)
                 flag.remove_from_sprite_lists()
 
             # Check length of coin and flag list. If it is zero, flip to the
@@ -752,12 +775,12 @@ class GameOverViewWin(arcade.View):
         arcade.set_viewport(0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
         """ Draw this view """
         arcade.start_render()
-        arcade.draw_text("You Won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, font_size=50,
+        arcade.draw_text("You Won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 80, arcade.color.WHITE, font_size=50,
                          anchor_x="center")
-        arcade.draw_text("You Collected All of the Coins and Flags!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 70,
+        arcade.draw_text("You Collected All of the Coins and Flags!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
                          arcade.color.WHITE, font_size=45,
                          anchor_x="center")
-        arcade.draw_text("Click to Play Again", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 120,
+        arcade.draw_text("Click to Play Again", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 70,
                          arcade.color.WHITE, font_size=30,
                          anchor_x="center")
 
@@ -797,7 +820,7 @@ class GameOverViewLoss(arcade.View):
 def main():
     """ Main method """
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    start_view = InstructionView()
+    start_view = TitleScreen()
     window.show_view(start_view)
     arcade.run()
 
