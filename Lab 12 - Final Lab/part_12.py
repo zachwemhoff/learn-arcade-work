@@ -32,7 +32,7 @@ GRAVITY = .9 * SPRITE_SCALING
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
-PLAYER_START_X = 64
+PLAYER_START_X = 50
 PLAYER_START_Y = 60
 
 
@@ -47,12 +47,12 @@ class InstructionView(arcade.View):
         arcade.start_render()
         arcade.draw_text("Instructions:", SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + 200,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Use the left and right arrow keys to move left or right", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100,
-                         arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
-        arcade.draw_text("Use the up arrow key to jump", SCREEN_WIDTH / 2,
+        arcade.draw_text("* Use the left and right arrow keys to move left or right", SCREEN_WIDTH/2,
+                         SCREEN_HEIGHT/2+100, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
+        arcade.draw_text("* Use the up arrow key to jump", SCREEN_WIDTH / 2,
                          SCREEN_HEIGHT / 2+50, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
-        arcade.draw_text("Collect all of the coins without running into the bugs", SCREEN_WIDTH/2, SCREEN_HEIGHT/2,
-                         arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
+        arcade.draw_text("* Collect all of the coins without running into enemies to win", SCREEN_WIDTH/2,
+                         SCREEN_HEIGHT/2, arcade.color.WHITE_SMOKE, font_size=25, anchor_x="center")
         arcade.draw_text("Click to advance", SCREEN_WIDTH/2, SCREEN_HEIGHT/2-75,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
 
@@ -169,8 +169,8 @@ class GameView(arcade.View):
 
         # Set up the player
         self.score = 0
-        self.flags_left = 2
-        self.coins_left = 10
+        self.flags_left = 3
+        self.coins_left = 30
         self.player_sprite = None
         self.physics_engine = None
         self.view_left = 0
@@ -193,8 +193,8 @@ class GameView(arcade.View):
 
         # Set up the player
         self.score = 0
-        self.coins_left = 20
-        self.flags_left = 2
+        self.coins_left = 30
+        self.flags_left = 3
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
@@ -220,7 +220,7 @@ class GameView(arcade.View):
 
         # Create ground for Level 3
         # Image from kenny.nl
-        for x in range(7600, 11310, 64):
+        for x in range(7590, 11310, 64):
             wall = arcade.Sprite("platformPack_tile003.png", 2)
             wall.center_x = x
             wall.center_y = 65
@@ -306,7 +306,7 @@ class GameView(arcade.View):
         # Create platform side to side level 2
         # Image from kenny.nl: kenny_simplifiedplatformer.zip
         wall = arcade.Sprite("platformPack_tile002.png", SPRITE_SCALING)
-        wall.center_y = 3 * GRID_PIXEL_SIZE
+        wall.center_y = 2.75 * GRID_PIXEL_SIZE
         wall.center_x = 4000
         wall.boundary_left = 3800
         wall.boundary_right = 4200
@@ -435,6 +435,40 @@ class GameView(arcade.View):
         enemy.boundary_right = 6500
         self.enemy_list.append(enemy)
 
+        """Enemies for level 3"""
+        # Images from kenny.nl
+        enemy = arcade.Sprite("walrus.png", 0.7)
+        enemy.bottom = 150
+        enemy.left = 8200
+        enemy.change_x = 2
+        enemy.boundary_left = 8000
+        enemy.boundary_right = 8500
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("owl.png", 0.7)
+        enemy.bottom = 400
+        enemy.left = 8400
+        enemy.change_x = 2
+        enemy.boundary_left = 8200
+        enemy.boundary_right = 8700
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("narwhal.png", 0.7)
+        enemy.bottom = 150
+        enemy.left = 9600
+        enemy.change_x = 2
+        enemy.boundary_left = 9000
+        enemy.boundary_right = 10200
+        self.enemy_list.append(enemy)
+
+        enemy = arcade.Sprite("owl.png", 0.7)
+        enemy.bottom = 410
+        enemy.left = 10000
+        enemy.change_x = 2
+        enemy.boundary_left = 9700
+        enemy.boundary_right = 10300
+        self.enemy_list.append(enemy)
+
         # Outer wall image from kenny.nl
         # from kenny_simplifiedplatformer.zip
         for x in range(-60, 1650, 30):
@@ -476,6 +510,14 @@ class GameView(arcade.View):
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
 
+        # Level 3
+        for y in range(0, 1650, 30):
+            wall = arcade.Sprite("platformPack_tile040.png", 1.0)
+            wall.center_x = 11350
+            wall.center_y = y
+            self.static_wall_list.append(wall)
+            self.all_wall_list.append(wall)
+
         # Place Coins
         # Coin image from kenny.nl
         for i in range(COIN_COUNT):
@@ -484,16 +526,26 @@ class GameView(arcade.View):
             # Position the coin
             coin.center_x = random.randrange(50, 3700)
             coin.center_y = random.randrange(150, 350)
-            coin.center_y = random.randrange(400, 580)
+            coin.center_y = random.randrange(410, 560)
 
             self.coin_list.append(coin)
 
         # Level 2
         for i in range(COIN_COUNT):
             coin = arcade.Sprite("coin_01.png", .3)
-            coin.center_x = random.randrange(4000, 7500)
+            coin.center_x = random.randrange(4000, 7480)
             coin.center_y = random.randrange(150, 350)
-            coin.center_y = random.randrange(400, 580)
+            coin.center_y = random.randrange(410, 560)
+
+            # Add the coin to the lists
+            self.coin_list.append(coin)
+
+        # Level 3
+        for i in range(COIN_COUNT):
+            coin = arcade.Sprite("coin_01.png", .3)
+            coin.center_x = random.randrange(7600, 11300)
+            coin.center_y = random.randrange(150, 350)
+            coin.center_y = random.randrange(410, 560)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -513,8 +565,14 @@ class GameView(arcade.View):
             flag.center_x = 7520
             flag.center_y = 440
             self.flag_list.append(flag)
+        # Level 3
+        for i in range(FLAG_COUNT):
+            flag = arcade.Sprite("flag_NW.png", .7)
+            flag.center_x = 11275
+            flag.center_y = 175
+            self.flag_list.append(flag)
 
-        # Place Arrows
+        # Place Arrow
         # Arrow image from platformer-pack-redux-360-assets, kenny.nl
         arrow = arcade.Sprite("signRight.png", .5)
         arrow.center_x = 20
@@ -643,14 +701,13 @@ class GameView(arcade.View):
 
             # Check length of coin and flag list. If it is zero, flip to the
             # game over view.
-            if len(self.coin_list) == 0:
+            if len(self.coin_list) == 0 and len(self.flag_list) == 0:
                 game_over_view_good = GameOverViewWin()
                 self.window.show_view(game_over_view_good)
 
         # --- Manage Scrolling ---
 
         # Track if we need to change the viewport
-
         changed = False
 
         # Scroll left
@@ -679,6 +736,8 @@ class GameView(arcade.View):
 
         # If we need to scroll, go ahead and do it.
         if changed:
+            self.view_bottom = int(self.view_bottom)
+            self.view_left = int(self.view_left)
             arcade.set_viewport(self.view_left,
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
@@ -688,21 +747,19 @@ class GameView(arcade.View):
 class GameOverViewWin(arcade.View):
     """ View to show when game is over """
 
-    def __init__(self):
-        """ This is run once when we switch to this view """
-        # Screen created using windows paint and kenny.nl image
-        super().__init__()
-        self.texture = arcade.load_texture("game_over_won.png")
-
-        # Reset the viewport, necessary if we have a scrolling game and we need
-        # to reset the viewport back to the start so we can see what we draw.
-        arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
-
     def on_draw(self):
+        arcade.set_background_color(arcade.color.GOLDENROD)
+        arcade.set_viewport(0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
         """ Draw this view """
         arcade.start_render()
-        self.texture.draw_sized(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
-                                SCREEN_WIDTH, SCREEN_HEIGHT)
+        arcade.draw_text("You Won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, font_size=50,
+                         anchor_x="center")
+        arcade.draw_text("You Collected All of the Coins and Flags!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 70,
+                         arcade.color.WHITE, font_size=45,
+                         anchor_x="center")
+        arcade.draw_text("Click to Play Again", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 120,
+                         arcade.color.WHITE, font_size=30,
+                         anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, re-start the game. """
